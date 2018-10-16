@@ -43,7 +43,7 @@ RUN yum -y update \
 ##------------------------------------------
 ## User specific rpms
 ##------------------------------------------
-RUN yum -y install ansible unzip wget make gcc gcc-gfortran git redhat-rpm-config
+RUN yum -y install ansible unzip wget make gcc gcc-gfortran git redhat-rpm-config openblas-threads64 openblas-devel
 
 ADD playbooks /playbooks
 RUN chmod +x /playbooks

@@ -16,8 +16,11 @@ folder_exists () { test -d $1 ; }
 echo "run...."
 
 ### These ENVs should be set for configure.
-echo "TF_NEED_JEMALLOC = "$TF_NEED_JEMALLOC
-echo "TF_NEED_GCP = "$TF_NEED_GCP
+echo "============================================"
+echo "          User defined ENVs                  "
+echo "============================================"
+echo "CUSTOM_BUILD="$CUSTOM_BUILD
+echo "BUILD_OPTS="$BUILD_OPTS
 echo "============================================"
 
 echo "HOME="$HOME
@@ -26,40 +29,58 @@ echo "PATH = "$PATH
 echo "which_python="`which python`
 echo "link_which_python="`ls -l $(which python) | awk '{print  $9 $10 $11}'`
 echo "link_bin_python="`ls -l /usr/bin/python |awk '{print  $9 $10 $11}'`
-echo "which_pip="`which pip`
-echo "which_pip_version="`pip --version `
-echo "which_pip_site="`pip --version |awk '{print $4}' `
-echo "link_which_pip="`ls -l $(which pip) | awk '{print  $9 $10 $11}'`
+if command_exists pip ; then 
+    echo "which_pip="`which pip`
+    echo "which_pip_version="`pip --version `
+    echo "which_pip_site="`pip --version |awk '{print $4}' `
+    echo "link_which_pip="`ls -l $(which pip) | awk '{print  $9 $10 $11}'` 
+fi
 
 
 cd /workspace
 
-
-# Get Ansible RHEL 7.5 scripts and run them
-if command_exists ansible-playbook ; then 
-    echo "ansible-playbook command exists.";
-    ansible-playbook -i hosts /playbooks/openblas.yaml --extra-vars="{install_required: 'yes', remove_existing_openblas: 'yes', target: 'PENRYN'}"; 
-else 
-    echo "ansible-playbook doesnt exists"; 
-fi
-
-
 if [[ $TEST_LOOP = "y" ]]
 then
-	echo "####################################"
-	echo "      DEV/TEST MODE.....       	  "
-	echo "####################################"
+    echo "####################################"
+    echo "      DEV/TEST MODE.....            "
+    echo "####################################"
     echo "Starting a infinite while loop to debug in console terminal\n"
     while :
-	do
-		echo "Press [CTRL+C] to stop.."
-		sleep 1
-	done
+    do
+        echo "Press [CTRL+C] to stop.."
+        sleep 1
+    done
 fi
 
 
- 
-# Get C code to run benchmark
+echo "============================================"
+echo "          BUILD                             "
+echo "============================================"
+# make
+if command_exists ansible-playbook ; then 
+    echo "ansible-playbook command exists.";
+    ansible-playbook -i /playbooks/hosts /playbooks/openblas.yaml --extra-vars="{install_required: 'yes', remove_existing_openblas: 'yes', target: 'PENRYN'}"; 
+else 
+    echo "ansible-playbook doesnt exists"; 
+    exit 1;
+fi
+
+echo "============================================"
+echo "          PERFORMANCE                       "
+echo "============================================"
+echo "Custom built OpenBLAS Performance"
+export LD_LIBRARY_PATH=/opt/OpenBLAS
+gcc -I/opt/OpenBLAS -L/opt/OpenBLAS -o test /usr/libexec/s2i/openblas_sgemm_test_gflops.c -lopenblas -lpthread -lgfortran -std=c99
+./test
+
+echo "============================================"
+echo "RHEL OpenBLAS Performance"
+export LD_LIBRARY_PATH=/usr/lib64 #overwrite the load library path
+gcc -I/usr/include/openblas -L/usr/lib64 -o test /usr/libexec/s2i/openblas_sgemm_test_gflops.c -lopenblasp -lpthread -lgfortran -std=c99
+./test
+
+
+
 
 
 

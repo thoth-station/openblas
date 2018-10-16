@@ -39,6 +39,10 @@
                                     {
                                         "name": "BUILD_OPTS",
                                         "value": "${BUILD_OPTS}"
+                                    },
+                                    {
+                                        "name": "TEST_LOOP",
+                                        "value": "${TEST_LOOP}"
                                     }
                                 ],
                                 "name": "${APPLICATION_NAME}",
@@ -79,12 +83,18 @@
         {
             "name": "CUSTOM_BUILD",
             "description": "Set to custom BUILD command",
-            "value": "bazel build --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.2  --cxxopt='-D_GLIBCXX_USE_CXX11_ABI=0' --local_resources 2048,2.0,1.0 --verbose_failures //tensorflow/tools/pip_package:build_pip_package",
+            "value": "",
             "required": false
         },
         {
             "name": "BUILD_OPTS",
             "description": "Custom options to bazel BUILD command",
+            "value": "",
+            "required": false
+        },
+        {
+            "name": "TEST_LOOP",
+            "description": "run container to debug",
             "value": "",
             "required": false
         }
