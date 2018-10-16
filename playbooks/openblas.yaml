@@ -22,30 +22,6 @@
   gather_facts: false
   connection: local
   tasks:
-    - name: Install make
-      yum: pkg=make
-      when: "'yes' in PREREQS"
-
-    - name: Install gcc
-      yum: pkg=gcc
-      when: "'yes' in PREREQS"
-
-    - name: Install gfortran
-      yum: pkg=gcc-gfortran
-      when: "'yes' in PREREQS"
-
-    - name: Install libgfortran
-      yum: pkg=libgfortran
-      when: "'yes' in PREREQS"
-
-    - name: Install git
-      yum: pkg=git
-      when: "'yes' in PREREQS"
-
-    - name: Install redhat-rpm-config
-      yum: pkg=redhat-rpm-config
-      when: "'yes' in PREREQS"
-
     - debug:
         msg: "OpenBLAS will be installed to '{{ BUILD_DIR }}'"
 

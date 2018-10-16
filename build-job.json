@@ -73,7 +73,7 @@
         {
             "name": "BUILDER_IMAGESTREAM",
             "description": "tensorflow-build-image-fc27-36:latest, tensorflow-build-image-rhel75-36:2",
-            "value": "",
+            "value": "build-image",
             "required": true
         },
         {
