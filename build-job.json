@@ -1,0 +1,93 @@
+{
+    "kind": "Template",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "build-job",
+        "annotations": {
+            "description": "Template to create a Job to build files.",
+            "tags": "tf-app"
+        }
+    },
+    "objects": [
+        {
+            "kind": "Job",
+            "apiVersion": "batch/v1",
+            "metadata": {
+                "name": "${APPLICATION_NAME}",
+                "labels": {
+                    "appTypes": "build-job",
+                    "appName": "${APPLICATION_NAME}"
+                }
+            },
+            "spec": {
+                "template": {
+                    "metadata": {
+                        "labels": {
+                            "appTypes": "build-job",
+                            "deploymentconfig": "${APPLICATION_NAME}",
+                            "appName": "${APPLICATION_NAME}"
+                        }
+                    },
+                    "spec": {
+                        "containers": [
+                            {
+                                "env": [
+                                    {
+                                        "name": "CUSTOM_BUILD",
+                                        "value": "${CUSTOM_BUILD}"
+                                    },
+                                    {
+                                        "name": "BUILD_OPTS",
+                                        "value": "${BUILD_OPTS}"
+                                    }
+                                ],
+                                "name": "${APPLICATION_NAME}",
+                                "image": "${BUILDER_IMAGESTREAM}",
+                                "command": ["/entrypoint", "/usr/libexec/s2i/run"],
+                                "resources": {
+                                    "limits": {
+                                        "cpu": "4",
+                                        "memory": "8Gi"
+                                    },
+                                    "requests": {
+                                        "cpu": "2",
+                                        "memory": "2Gi"
+                                    }
+                                }
+                            }
+                        ],
+						"restartPolicy": "Never"
+                    }
+                }
+            }
+        }
+    ],
+    "parameters": [
+        {
+            "name": "APPLICATION_NAME",
+            "description": "The name of the application.",
+            "value": "build-job",
+            "from": "[a-zA-Z0-9]{10}",
+            "required": true
+        },
+        {
+            "name": "BUILDER_IMAGESTREAM",
+            "description": "tensorflow-build-image-fc27-36:latest, tensorflow-build-image-rhel75-36:2",
+            "value": "",
+            "required": true
+        },
+        {
+            "name": "CUSTOM_BUILD",
+            "description": "Set to custom BUILD command",
+            "value": "bazel build --copt=-mavx --copt=-mavx2 --copt=-mfma --copt=-mfpmath=both --copt=-msse4.2  --cxxopt='-D_GLIBCXX_USE_CXX11_ABI=0' --local_resources 2048,2.0,1.0 --verbose_failures //tensorflow/tools/pip_package:build_pip_package",
+            "required": false
+        },
+        {
+            "name": "BUILD_OPTS",
+            "description": "Custom options to bazel BUILD command",
+            "value": "",
+            "required": false
+        }
+    ]
+}
+

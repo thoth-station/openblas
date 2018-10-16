@@ -1,0 +1,90 @@
+---
+- name: Playbook to Build OpenBlas
+  tags:
+    - openshift
+    - thoth
+
+  hosts: localhost
+  vars:
+    OPENBLAS_VERSION: '{{ version | default("v0.3.2") }}' #yes, v0.3.2 is out of date...
+    BUILD_DIR: '{{ build_dir | default("/opt/OpenBLAS") }}'
+    PREREQS: '{{ install_required | default("no") }}'
+    REMOVE_OPENBLAS: '{{ remove_existing_openblas | default("no") }}'
+    COMMON: '{{ CFLAGS | default("-mfma -mavx2 -O3 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fPIC") }}'
+    USE_THREAD: '{{ use_threading | default("1") }}'
+    TARGET: '{{ target | default("CORE2") }}'
+    USE_OPENMP: '{{ use_openmp | default("0") }}'
+    DYNAMIC_ARCH: '{{ dynamic_arch | default("1") }}'
+    NO_AVX: '{{ no_avx | default("1") }}' #by default, do not build with AVX instructions
+    NO_AVX2: '{{ no_avx2 | default("0") }}' #by default, DO build with AVX2 instructions
+    NO_AFFINITY: '{{ no_affinity | default("0") }}'    
+    
+  gather_facts: false
+  connection: local
+  tasks:
+    - name: Install make
+      yum: pkg=make
+      when: "'yes' in PREREQS"
+
+    - name: Install gcc
+      yum: pkg=gcc
+      when: "'yes' in PREREQS"
+
+    - name: Install gfortran
+      yum: pkg=gcc-gfortran
+      when: "'yes' in PREREQS"
+
+    - name: Install libgfortran
+      yum: pkg=libgfortran
+      when: "'yes' in PREREQS"
+
+    - name: Install git
+      yum: pkg=git
+      when: "'yes' in PREREQS"
+
+    - name: Install redhat-rpm-config
+      yum: pkg=redhat-rpm-config
+      when: "'yes' in PREREQS"
+
+    - debug:
+        msg: "OpenBLAS will be installed to '{{ BUILD_DIR }}'"
+
+    - debug:
+        msg: 'OpenBLAS version is {{ OPENBLAS_VERSION }}'
+
+    - name: If you chose to remove the existing OpenBLAS build folder, it will be erased.
+      file:
+        state: absent
+        dest: '{{ BUILD_DIR }}'
+      when: "'yes' in REMOVE_OPENBLAS"
+
+    - name: Create OpenBLAS build dir ONLY if you chose to remove the existing OpenBLAS folder.
+      file:
+        state: directory
+        dest: '{{ BUILD_DIR }}'
+      when: "'yes' in REMOVE_OPENBLAS"
+
+    - name: Clone OpenBLAS repo and place it in '{{ BUILD_DIR }}' if the OpenBLAS build dir is empty.
+      git:
+        repo: https://github.com/xianyi/OpenBLAS.git
+        dest: '{{ BUILD_DIR }}'
+        version: '{{ OPENBLAS_VERSION }}'
+      when: "'yes' in REMOVE_OPENBLAS"
+
+    - make:
+        chdir: '{{ BUILD_DIR }}'
+        target: all
+        params:
+          CC: gcc
+          FC: gfortran
+          COMMON_OPT: '{{ COMMON }}'
+          USE_THREAD: '{{ USE_THREAD }}'
+          NO_AFFINITY: '{{ NO_AFFINITY }}'
+          USE_OPENMP: '{{ USE_OPENMP }}'
+          TARGET: '{{ TARGET }}'
+      register: build_results
+
+    - debug:
+        var: build_results.stdout_lines
+
+    
