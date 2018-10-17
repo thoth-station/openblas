@@ -12,9 +12,8 @@
     REMOVE_OPENBLAS: '{{ remove_existing_openblas | default("no") }}'
     COMMON: '{{ CFLAGS | default("-mfma -mavx2 -O3 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fPIC") }}'
     USE_THREAD: '{{ use_threading | default("1") }}'
-    TARGET: '{{ target | default("CORE2") }}'
     USE_OPENMP: '{{ use_openmp | default("0") }}'
-    DYNAMIC_ARCH: '{{ dynamic_arch | default("1") }}'
+    DYNAMIC_ARCH: '{{ dynamic_arch | default("PENRYN") }}'
     NO_AVX: '{{ no_avx | default("1") }}' #by default, do not build with AVX instructions
     NO_AVX2: '{{ no_avx2 | default("0") }}' #by default, DO build with AVX2 instructions
     NO_AFFINITY: '{{ no_affinity | default("0") }}'    
@@ -57,7 +56,6 @@
           USE_THREAD: '{{ USE_THREAD }}'
           NO_AFFINITY: '{{ NO_AFFINITY }}'
           USE_OPENMP: '{{ USE_OPENMP }}'
-          TARGET: '{{ TARGET }}'
       register: build_results
 
     - debug:
