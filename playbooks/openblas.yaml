@@ -10,7 +10,7 @@
     BUILD_DIR: '{{ build_dir | default("/opt/OpenBLAS") }}'
     PREREQS: '{{ install_required | default("no") }}'
     REMOVE_OPENBLAS: '{{ remove_existing_openblas | default("no") }}'
-    COMMON: '{{ CFLAGS | default("-mfma -mavx2 -O3 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fPIC") }}'
+    COMMON: '{{ CFLAGS | default("-mfma -mavx2 -O3 -g -pipe -Wall -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -Wp,-D_GLIBCXX_ASSERTIONS -fexceptions -fstack-protector-strong -grecord-gcc-switches -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -m64 -mtune=core-avx2 -fasynchronous-unwind-tables -fstack-clash-protection -fPIC") }}'
     USE_THREAD: '{{ use_threading | default("1") }}'
     USE_OPENMP: '{{ use_openmp | default("0") }}'
     DYNAMIC_ARCH: '{{ dynamic_arch | default("PENRYN") }}'
