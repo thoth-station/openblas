@@ -1,0 +1,34 @@
+---
+
+- name: Install OpenBLAS OpenMPI
+  yum: pkg=openblas-openmp
+
+- name: Install OpenBLAS developer package
+  yum: pkg=openblas-devel
+
+- name: Install MVA Pich
+  yum: pkg=mvapich23
+
+- name: Install MVA Pich developer package
+  yum: pkg=mvapich23-devel
+
+- name: Install hwloc
+  yum: pkg=hwloc
+
+- name: Install hwloc developer package
+  yum: pkg=hwloc-devel
+
+- name: Install libibverbs
+  yum: pkg=libibverbs
+
+- name: Install libibverbs developer package
+  yum: pkg=libibverbs-devel
+
+- name: Install libibumad
+  yum: pkg=libibumad
+
+- name: Install libibumad developer package
+  yum: pkg=libibumad-devel
+
+- name: Install rdma
+  yum: pkg=rdma

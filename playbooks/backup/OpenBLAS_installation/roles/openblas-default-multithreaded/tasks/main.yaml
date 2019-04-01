@@ -1,0 +1,7 @@
+---
+
+- name: Install threaded OpenBLAS
+  yum: pkg=openblas-threads64
+
+- name: Install OpenBLAS developer package
+  yum: pkg=openblas-devel

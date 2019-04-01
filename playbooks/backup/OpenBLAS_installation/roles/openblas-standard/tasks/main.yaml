@@ -1,0 +1,7 @@
+---
+
+- name: Install standard OpenBLAS (no multithreading capabilities)
+  yum: pkg=openblas
+
+- name: Install OpenBLAS developer package
+  yum: pkg=openblas-devel

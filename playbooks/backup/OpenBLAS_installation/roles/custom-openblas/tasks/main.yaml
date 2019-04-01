@@ -1,0 +1,77 @@
+---
+
+- name: Install required packages for building OpenBLAS (only if this option is specified)
+  yum:
+    name: ['make', 'gcc', 'gcc-gfortran', 'libgfortran', 'git']
+  when: "'yes' == PREREQS"
+
+- name: Create locales file and populate it
+  copy:
+    dest: "/etc/sysconfig/i18n"
+    content: |
+      LANG="en_US.UTF-8"
+      LC_ALL="C"
+      LANGUAGE="C"
+
+- debug:
+    msg: "{{ lookup('file', '/etc/sysconfig/i18n') }}"
+
+- debug:
+    msg: "OpenBLAS will be built under '{{ BUILD_DIR }}'"
+
+- debug:
+    msg: "OpenBLAS will be installed to '{{ INSTALL_DIR }}'"
+
+- debug:
+    msg: 'OpenBLAS version is {{ OPENBLAS_VERSION }}'
+
+- name: Remove existing OpenBLAS build folder (if it exists)
+  file:
+    state: absent
+    dest: '{{ BUILD_DIR }}'
+
+- name: Create OpenBLAS build dir
+  file:
+    state: directory
+    dest: '{{ BUILD_DIR }}'
+
+- name: Clone OpenBLAS repo and place it in '{{ BUILD_DIR }}'
+  git:
+    repo: https://github.com/xianyi/OpenBLAS.git
+    dest: '{{ BUILD_DIR }}'
+    version: '{{ OPENBLAS_VERSION }}'
+
+- make:
+    chdir: '{{ BUILD_DIR }}'
+    target: all
+    params:
+      CC: '{{ CC }}'
+      FC: '{{ FC }}'
+      COMMON_OPT: '{{ COMMON }}'
+      USE_THREAD: '{{ USE_THREAD }}'
+      USE_OPENMP: '{{ USE_OPENMP }}'
+      LC_ALL: "C"
+      LANGUAGE: "C"
+      LANG: "en_US.UTF-8"
+  register: build_results
+
+- name: Save results to build log, "{{ BUILD_DIR }}/build.log"
+  local_action: copy content={{ build_results.stdout }} dest={{ BUILD_DIR }}/openblas_build.log
+
+- make:
+    chdir: '{{ BUILD_DIR }}'
+    target: install
+    params:
+      PREFIX: '{{ INSTALL_DIR }}'
+
+- name: "Looking for OpenBLAS installation directory at {{ INSTALL_DIR }}."
+  command: ls '{{ INSTALL_DIR }}'
+  register: ls_output
+
+- debug:
+    msg: "OpenBLAS successfully installed to {{ INSTALL_DIR }}."
+  when: ls_output.stdout != ""
+
+- debug:
+    msg: "OpenBLAS installation could not be found. FAILED."
+  when: ls_output.stdout == ""
