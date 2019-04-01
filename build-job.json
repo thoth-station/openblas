@@ -33,8 +33,20 @@
                             {
                                 "env": [
                                     {
-                                        "name": "CUSTOM_BUILD",
-                                        "value": "${CUSTOM_BUILD}"
+                                        "name": "CFLAGS",
+                                        "value": "${CFLAGS}"
+                                    },
+                                    {
+                                        "name": "OPENBLAS_VERSION",
+                                        "value": "${OPENBLAS_VERSION}"
+                                    },
+                                    {
+                                        "name": "USE_THREADING",
+                                        "value": "${USE_THREADING}"
+                                    },
+                                    {
+                                        "name": "USE_OPENMP",
+                                        "value": "${USE_OPENMP}"
                                     },
                                     {
                                         "name": "BUILD_OPTS",
@@ -81,9 +93,27 @@
             "required": true
         },
         {
-            "name": "CUSTOM_BUILD",
+            "name": "CFLAGS",
             "description": "Set to custom BUILD command",
-            "value": "",
+            "value": "-O3 -m64 -mtune=generic -march=x86-64 -fPIC",
+            "required": false
+        },
+        {
+            "name": "OPENBLAS_VERSION",
+            "description": "Openblas tag from repo https://github.com/xianyi/OpenBLAS.git",
+            "value": "v0.3.3",
+            "required": false
+        },
+        {
+            "name": "USE_THREADING",
+            "description": "use threading",
+            "value": "1",
+            "required": false
+        },
+        {
+            "name": "USE_OPENMP",
+            "description": "use openmp",
+            "value": "0",
             "required": false
         },
         {

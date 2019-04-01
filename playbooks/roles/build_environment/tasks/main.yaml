@@ -19,12 +19,12 @@
     group: root 
     mode: 01777
 
-- name: Install required packages for building OpenBLAS (only if this option is specified)
+- name: Fedora Install required packages for building OpenBLAS (only if this option is specified)
   dnf:
     name: ['make', 'gcc', 'gcc-gfortran', 'libgfortran', 'git']
-  when: ansible_distribution != 'CentOS' or ansible_distribution != 'Red Hat Enterprise Linux'
+  when: ansible_distribution == 'Fedora'
 
-- name: Install required packages for building OpenBLAS (only if this option is specified)
+- name: Centos Install required packages for building OpenBLAS (only if this option is specified)
   yum:
     name: ['make', 'gcc', 'gcc-gfortran', 'libgfortran', 'git', 'redhat-rpm-config', 'openblas-threads64', 'openblas-devel']
   when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'

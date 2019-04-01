@@ -19,7 +19,10 @@ echo "run...."
 echo "============================================"
 echo "          User defined ENVs                  "
 echo "============================================"
-echo "CUSTOM_BUILD="$CUSTOM_BUILD
+echo "CFLAGS="$CFLAGS
+echo "OPENBLAS_VERSION="$OPENBLAS_VERSION
+echo "USE_THREADING="$USE_THREADING
+echo "USE_OPENMP="$USE_OPENMP
 echo "BUILD_OPTS="$BUILD_OPTS
 echo "============================================"
 
@@ -59,7 +62,7 @@ echo "============================================"
 # make
 if command_exists ansible-playbook ; then 
     echo "ansible-playbook command exists.";
-    ansible-playbook -i ./playbooks/hosts ./playbooks/play.yaml --tags "compile_test"  --extra-vars="{install_required: 'yes', remove_existing_openblas: 'yes', target: 'PENRYN'}"; 
+    ansible-playbook -i /playbooks/hosts /playbooks/play.yaml --tags "compile_test"  --extra-vars="{install_required: 'yes', remove_existing_openblas: 'yes', target: 'PENRYN'}"; 
 else 
     echo "ansible-playbook doesnt exists"; 
     exit 1;

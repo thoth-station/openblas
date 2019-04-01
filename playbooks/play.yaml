@@ -7,13 +7,13 @@
   roles:
     - role: build_environment
       vars:
-        OPENBLAS_VERSION: '{{ version | default("v0.3.3") }}'
+        OPENBLAS_VERSION: "{{ lookup('env','OPENBLAS_VERSION') }}"
         BUILD_DIR: '{{ build_dir | default("/tmp/openblas_build") }}'
         INSTALL_DIR: '{{ install_dir | default("/opt/OpenBLAS") }}'
         PREREQS: '{{ install_required | default("no") }}'
-        COMMON: '{{ CFLAGS | default("-O3 -m64 -mtune=generic -march=x86-64 -fPIC") }}'
-        USE_THREAD: '{{ use_threading | default("1") }}'
-        USE_OPENMP: '{{ use_openmp | default("0") }}'
+        COMMON: "{{ lookup('env','CFLAGS') }}"
+        USE_THREAD: "{{ lookup('env', 'USE_THREADING') | default('1') }}"
+        USE_OPENMP: "{{ lookup('env', 'USE_OPENMP') | default('0') }}"
         CC: '{{ c_compiler | default("gcc") }}'
         FC: '{{ fortran_compiler | default("gfortran") }}'
       tags: 'build_environment'
