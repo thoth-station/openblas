@@ -39,7 +39,7 @@ RUN chmod +x /playbooks
 ##------------------------------------------
 RUN yum -y update \
     && yum -y install ansible \
-    && ansible-playbook -i /playbooks/hosts /playbooks/play.yaml --tags "build_environment" --extra-vars="{remove_existing_openblas: 'yes', target: 'PENRYN'}";
+    && ansible-playbook -i /playbooks/hosts /playbooks/play.yaml --tags "build_environment" --extra-vars="{remove_existing_openblas: 'yes', target: 'PENRYN'}" -v;
 
 
 ##------------------------------------------

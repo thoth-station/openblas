@@ -16,6 +16,7 @@ folder_exists () { test -d $1 ; }
 echo "run...."
 
 ### These ENVs should be set for configure.
+### docker run -it -u 0 -v $(pwd):/workspace openshift/base-centos7  /bin/bash
 echo "============================================"
 echo "          User defined ENVs                  "
 echo "============================================"
