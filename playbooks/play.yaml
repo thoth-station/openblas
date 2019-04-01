@@ -1,0 +1,23 @@
+---
+
+- hosts: localhost
+  become: yes
+  connection: local
+
+  roles:
+    - role: build_environment
+      vars:
+        OPENBLAS_VERSION: '{{ version | default("v0.3.3") }}'
+        BUILD_DIR: '{{ build_dir | default("/tmp/openblas_build") }}'
+        INSTALL_DIR: '{{ install_dir | default("/opt/OpenBLAS") }}'
+        PREREQS: '{{ install_required | default("no") }}'
+        COMMON: '{{ CFLAGS | default("-O3 -m64 -mtune=generic -march=x86-64 -fPIC") }}'
+        USE_THREAD: '{{ use_threading | default("1") }}'
+        USE_OPENMP: '{{ use_openmp | default("0") }}'
+        CC: '{{ c_compiler | default("gcc") }}'
+        FC: '{{ fortran_compiler | default("gfortran") }}'
+      tags: 'build_environment'
+
+    - role: compile_test
+      tags: 'compile_test'
+

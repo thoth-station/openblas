@@ -1,0 +1,46 @@
+---
+
+- debug:
+    msg: "OpenBLAS will be installed to '{{ BUILD_DIR }}'"
+
+- debug:
+    msg: 'OpenBLAS version is {{ OPENBLAS_VERSION }}'
+
+- name: If you chose to remove the existing OpenBLAS build folder, it will be erased.
+  file:
+    state: absent
+    dest: '{{ BUILD_DIR }}'
+  when: "'yes' in REMOVE_OPENBLAS"
+
+- name: Create OpenBLAS build dir ONLY if you chose to remove the existing OpenBLAS folder.
+  file:
+    state: directory
+    dest: '{{ BUILD_DIR }}'
+  when: "'yes' in REMOVE_OPENBLAS"
+
+- name: Clone OpenBLAS repo and place it in '{{ BUILD_DIR }}' if the OpenBLAS build dir is empty.
+  git:
+    repo: https://github.com/xianyi/OpenBLAS.git
+    dest: '{{ BUILD_DIR }}'
+    version: '{{ OPENBLAS_VERSION }}'
+  when: "'yes' in REMOVE_OPENBLAS"
+
+- make:
+    chdir: '{{ BUILD_DIR }}'
+    target: all
+    params:
+      CC: gcc
+      FC: gfortran
+      COMMON_OPT: '{{ COMMON }}'
+      USE_THREAD: '{{ USE_THREAD }}'
+      NO_AFFINITY: '{{ NO_AFFINITY }}'
+      USE_OPENMP: '{{ USE_OPENMP }}'  
+      LC_ALL: "C"
+      LANGUAGE: "C"
+      LANG: "en_US.UTF-8"
+  register: build_results
+
+- debug:
+    var: build_results.stdout_lines
+
+    

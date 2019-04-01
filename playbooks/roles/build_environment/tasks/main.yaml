@@ -1,0 +1,41 @@
+---
+
+- name: capture output of id command
+  command: cat /etc/system-release
+  register: login
+
+- debug: msg="{{ login.stdout }}"
+
+- name: Yum epel
+  yum:
+    name: ['https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm']
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+
+- name: /etc/passwd 
+  file: 
+    path: /etc/passwd 
+    owner: root 
+    group: root 
+    mode: 01777
+
+- name: Install required packages for building OpenBLAS (only if this option is specified)
+  dnf:
+    name: ['make', 'gcc', 'gcc-gfortran', 'libgfortran', 'git']
+  when: ansible_distribution != 'CentOS' or ansible_distribution != 'Red Hat Enterprise Linux'
+
+- name: Install required packages for building OpenBLAS (only if this option is specified)
+  yum:
+    name: ['make', 'gcc', 'gcc-gfortran', 'libgfortran', 'git', 'redhat-rpm-config', 'openblas-threads64', 'openblas-devel']
+  when: ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux'
+
+- name: Create locales file and populate it
+  copy:
+    dest: "/etc/sysconfig/i18n"
+    content: |
+      LANG="en_US.UTF-8"
+      LC_ALL="C"
+      LANGUAGE="C"
+
+- debug:
+    msg: "{{ lookup('file', '/etc/sysconfig/i18n') }}"

@@ -59,7 +59,7 @@ echo "============================================"
 # make
 if command_exists ansible-playbook ; then 
     echo "ansible-playbook command exists.";
-    ansible-playbook -i /playbooks/hosts /playbooks/openblas.yaml --extra-vars="{install_required: 'yes', remove_existing_openblas: 'yes', target: 'PENRYN'}"; 
+    ansible-playbook -i ./playbooks/hosts ./playbooks/play.yaml --tags "compile_test"  --extra-vars="{install_required: 'yes', remove_existing_openblas: 'yes', target: 'PENRYN'}"; 
 else 
     echo "ansible-playbook doesnt exists"; 
     exit 1;

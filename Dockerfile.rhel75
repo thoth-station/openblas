@@ -31,23 +31,15 @@ ENV TINI_VERSION=v0.16.1
 ENV NB_USER=default
 ENV NB_UID=1001
 
-
-##------------------------------------------
-## Install repos
-##------------------------------------------
-RUN yum -y update \
-    && yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
-    && chmod a+rw /etc/passwd
-
-
-
-##------------------------------------------
-## User specific rpms
-##------------------------------------------
-RUN yum -y install ansible unzip wget make gcc gcc-gfortran libgfortran git redhat-rpm-config openblas-threads64 openblas-devel
-
 ADD playbooks /playbooks
 RUN chmod +x /playbooks
+
+##------------------------------------------
+## Install repos & User specific rpms
+##------------------------------------------
+RUN yum -y update \
+    && yum -y install ansible \
+    && ansible-playbook -i ./playbooks/hosts ./playbooks/play.yaml --tags "build_environment" --extra-vars="{remove_existing_openblas: 'yes', target: 'PENRYN'}";
 
 
 ##------------------------------------------

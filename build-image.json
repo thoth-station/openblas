@@ -101,7 +101,7 @@
         {
             "name": "APPLICATION_NAME",
             "description": "The name of the application.",
-            "value": "build-image",
+            "value": "openblas-build-image",
             "from": "[a-zA-Z0-9]{10}",
             "required": true
         },

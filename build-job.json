@@ -70,7 +70,7 @@
         {
             "name": "APPLICATION_NAME",
             "description": "The name of the application.",
-            "value": "build-job",
+            "value": "openblas-build-job",
             "from": "[a-zA-Z0-9]{10}",
             "required": true
         },

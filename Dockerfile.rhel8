@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/rhscl/s2i-core-rhel7
+FROM submod/s2i-base-ubi8
 
 MAINTAINER Courtney Pacheco <cpacheco@redhat.com>
 MAINTAINER Subin Modeel <smodeel@redhat.com>
@@ -31,31 +31,37 @@ ENV TINI_VERSION=v0.16.1
 ENV NB_USER=default
 ENV NB_UID=1001
 
-
-##------------------------------------------
-## Install repos
-##------------------------------------------
-RUN dnf -y update \
-    && chmod a+rw /etc/passwd
-
-
-
-##------------------------------------------
-## User specific rpms
-##------------------------------------------
-RUN dnf -y install ansible unzip wget make gcc gcc-gfortran git redhat-rpm-config openblas-threads64 openblas-devel
-
 ADD playbooks /playbooks
 RUN chmod +x /playbooks
+
+##------------------------------------------
+## Install repos & User specific rpms
+##------------------------------------------
+RUN yum -y update \
+    && yum -y install ansible \
+    && ansible-playbook -i ./playbooks/hosts ./playbooks/play.yaml --tags "build_environment" --extra-vars="{remove_existing_openblas: 'yes', target: 'PENRYN'}";
 
 
 ##------------------------------------------
 ## Install tini
 ##------------------------------------------
-RUN wget -q https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini -P /tmp \
-    && wget -q https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc -P /tmp \
+RUN  wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini -P /tmp \
+    && wget https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini.asc -P /tmp \
     && cd /tmp \
-    && gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 0527A9B7 && gpg --verify /tmp/tini.asc \
+    && \
+    TINI_GPGKEY=595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7; \
+    found=''; \
+    for server in \
+        ha.pool.sks-keyservers.net \
+        hkp://keyserver.ubuntu.com:80 \
+        hkp://p80.pool.sks-keyservers.net:80 \
+        pgp.mit.edu \
+    ; do \
+        echo "Fetching GPG key $TINI_GPGKEY from $server"; \
+        gpg --batch --keyserver "$server" --recv-keys "$TINI_GPGKEY" && found=yes && break; \
+    done; \
+    test -z "$found" && echo >&2 "ERROR: failed to fetch GPG key $TINI_GPGKEY" && exit 1; \
+    gpg --batch --verify /tmp/tini.asc /tmp/tini \
     && mv /tmp/tini /usr/local/bin/tini \
     && chmod +x /usr/local/bin/tini \
     && mkdir -p /home/$NB_USER/.ssh \
