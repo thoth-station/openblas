@@ -2,10 +2,10 @@
     "kind": "Template",
     "apiVersion": "v1",
     "metadata": {
-        "name": "build-job",
+        "name": "openblas-build-job",
         "annotations": {
             "description": "Template to create a Job to build files.",
-            "tags": "tf-app"
+            "tags": "openblas-build-job"
         }
     },
     "objects": [
@@ -15,7 +15,7 @@
             "metadata": {
                 "name": "${APPLICATION_NAME}",
                 "labels": {
-                    "appTypes": "build-job",
+                    "appTypes": "openblas-build-job",
                     "appName": "${APPLICATION_NAME}"
                 }
             },
@@ -23,7 +23,7 @@
                 "template": {
                     "metadata": {
                         "labels": {
-                            "appTypes": "build-job",
+                            "appTypes": "openblas-build-job",
                             "deploymentconfig": "${APPLICATION_NAME}",
                             "appName": "${APPLICATION_NAME}"
                         }

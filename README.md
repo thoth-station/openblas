@@ -13,8 +13,8 @@ oc create -f build-job.json
 
 #### 2. Create build image
 ```
-oc new-app --template=build-image \
---param=APPLICATION_NAME=build-image-1 \
+oc new-app --template=openblas-build-image \
+--param=APPLICATION_NAME=openblas-build-image-rhel7 \
 --param=S2I_IMAGE=registry.access.redhat.com/rhscl/s2i-core-rhel7  \
 --param=DOCKER_FILE_PATH=Dockerfile.rhel75
 ```
@@ -40,12 +40,12 @@ The values for `DOCKER_FILE_PATH` are :
 Import the template `build-image.json` into your namespace from Openshift UI.
 And then deploy from UI with appropriate values.
 
-#### 3. Create Tensorflow wheel for CPU using the build image
+#### 3. Compile and test openblas
 
 ```
-oc new-app --template=build-job  \
---param=APPLICATION_NAME=build-job-1 \
---param=BUILDER_IMAGESTREAM=build-image-1
+oc new-app --template=openblas-build-job  \
+--param=APPLICATION_NAME=openblas-build-job-rhel7 \
+--param=BUILDER_IMAGESTREAM=openblas-build-image-rhel7
 ```
 NOTE: `BUILDER_IMAGESTREAM = APPLICATION_NAME:VERSION` from step 2.
 

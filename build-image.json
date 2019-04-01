@@ -2,10 +2,10 @@
     "kind": "Template",
     "apiVersion": "v1",
     "metadata": {
-        "name": "build-image",
+        "name": "openblas-build-image",
         "annotations": {
             "description": "Template to make build images.",
-            "tags": "build-image"
+            "tags": "openblas-build-image"
         }
     },
     "objects": [
@@ -15,7 +15,7 @@
             "metadata": {
                 "name": "${APPLICATION_NAME}",
                 "labels": {
-                    "appTypes": "build-image",
+                    "appTypes": "openblas-build-image",
                     "appName": "${APPLICATION_NAME}"
                 }
             },
@@ -31,7 +31,7 @@
             "metadata": {
                 "name": "${APPLICATION_NAME}",
                 "labels": {
-                    "appTypes": "build-image",
+                    "appTypes": "openblas-build-image",
                     "appName": "${APPLICATION_NAME}"
                 }
             },
@@ -146,7 +146,7 @@
             "description": "APP_ENV1",
             "value": "",
             "required": false
-        },
+        }
     ]
 }
 
