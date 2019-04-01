@@ -38,6 +38,7 @@ RUN chmod +x /playbooks
 ## Install repos & User specific rpms
 ##------------------------------------------
 RUN yum -y update \
+    && yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
     && yum -y install ansible
 
 RUN ansible-playbook -i /playbooks/hosts /playbooks/play.yaml --tags "build_environment" --extra-vars="{remove_existing_openblas: 'yes', target: 'PENRYN'}" -v;
