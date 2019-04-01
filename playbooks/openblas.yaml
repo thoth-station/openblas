@@ -55,10 +55,10 @@
           COMMON_OPT: '{{ COMMON }}'
           USE_THREAD: '{{ USE_THREAD }}'
           NO_AFFINITY: '{{ NO_AFFINITY }}'
-          USE_OPENMP: '{{ USE_OPENMP }}'
-	  LC_ALL: "C"
-	  LANGUAGE: "C"
-	  LANG: "en_US.UTF-8"
+          USE_OPENMP: '{{ USE_OPENMP }}'  
+          LC_ALL: "C"
+          LANGUAGE: "C"
+          LANG: "en_US.UTF-8"
       register: build_results
 
     - debug:
