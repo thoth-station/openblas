@@ -53,8 +53,8 @@
                                         "value": "${BUILD_OPTS}"
                                     },
                                     {
-                                        "name": "TEST_LOOP",
-                                        "value": "${TEST_LOOP}"
+                                        "name": "ANSIBLE_RETRY_FILES_ENABLED",
+                                        "value": "${ANSIBLE_RETRY_FILES_ENABLED}"
                                     }
                                 ],
                                 "name": "${APPLICATION_NAME}",
@@ -123,9 +123,9 @@
             "required": false
         },
         {
-            "name": "TEST_LOOP",
-            "description": "run container to debug",
-            "value": "",
+            "name": "ANSIBLE_RETRY_FILES_ENABLED",
+            "description": "turn retry off by 0",
+            "value": "0",
             "required": false
         }
     ]

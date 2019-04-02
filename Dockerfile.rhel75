@@ -31,8 +31,8 @@ ENV TINI_VERSION=v0.16.1
 ENV NB_USER=default
 ENV NB_UID=1001
 
-ADD playbooks /playbooks
-RUN chmod +x /playbooks
+ADD playbooks /tmp/playbooks
+RUN chmod +x /tmp/playbooks
 
 ##------------------------------------------
 ## Install repos & User specific rpms
@@ -41,7 +41,7 @@ RUN yum -y update \
     && yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm \
     && yum -y install ansible wget
 
-RUN ansible-playbook -i /playbooks/hosts /playbooks/play.yaml --tags "build_environment" --extra-vars="{remove_existing_openblas: 'yes', target: 'PENRYN'}" -v;
+RUN ansible-playbook -i /tmp/playbooks/hosts /tmp/playbooks/play.yaml --tags "build_environment" --extra-vars="{remove_existing_openblas: 'yes', target: 'PENRYN'}" -v;
 
 
 ##------------------------------------------
